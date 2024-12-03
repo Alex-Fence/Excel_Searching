@@ -36,6 +36,7 @@ def main(search_directory, search_word):
         search_word_in_excel(file, search_word)
     for file_name in finding_files_lst:
         print(file_name)
+
 # Задайте директорию для поиска и слово для поиска
 search_directory = 'C:\\Users\\ita\\Downloads\\'  # Замените на нужный путь
 search_word = 'плата'  # Замените на нужное слово
