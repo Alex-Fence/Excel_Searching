@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 
+
 def find_excel_files(directory):
     """Ищет все файлы Excel в указанной директории и её подкаталогах."""
     excel_files = []
@@ -10,24 +11,33 @@ def find_excel_files(directory):
                 excel_files.append(os.path.join(root, file))
     return excel_files
 
+
 def search_word_in_excel(file_path, word):
     """Ищет заданное слово в файле Excel."""
+    errors = []
     if file_path.endswith('.xls'):
         engine = 'xlrd'
     elif file_path.endswith('.xlsx'):
         engine = 'openpyxl'
     try:
-        df = pd.read_excel(file_path, engine = engine)
+        df = pd.read_excel(file_path, engine=engine)
         for column in df.columns:
             if df[column].astype(str).str.contains(word, na=False).any():
-                print(f'Слово "{word}" найдено в файле: {file_path}')
+                found_file_str = f'Слово "{word}" найдено в файле: {file_path}'
+                print(found_file_str)
+                write_to_file(result_file, found_file_str + '\n')
+
                 finding_files_lst.append(file_path)
                 return True
     except Exception as e:
-        print(f'Ошибка при обработке файла {file_path}: {e}')
+        errors.append(f'Ошибка при обработке файла {file_path}: {e}')
     return False
 
-def main(search_directory, search_word):
+def write_to_file(file_path, write_str):
+    with open(file_path, 'a', encoding='utf-8') as f:
+        f.write(write_str)
+
+def main_func(search_directory, search_word):
     """Основная функция для поиска файлов и слов."""
     excel_files = find_excel_files(search_directory)
     print(f'Найдено {len(excel_files)} файлов Excel.')
@@ -37,9 +47,18 @@ def main(search_directory, search_word):
     for file_name in finding_files_lst:
         print(file_name)
 
-# Задайте директорию для поиска и слово для поиска
-search_directory = 'C:\\Users\\ita\\Downloads\\'  # Замените на нужный путь
-search_word = 'плата'  # Замените на нужное слово
-finding_files_lst = []
 
-main(search_directory, search_word)
+def input_data():
+    """Функция для ввода данных пользователем."""
+    sourse_directory = input('Введите путь к директории для поиска: ')
+    search_word = input('Введите слово для поиска: ')
+    return sourse_directory, search_word
+
+
+if __name__ == '__main__':
+    # Задайте директорию для поиска и слово для поиска
+    search_directory, search_word = input_data()
+    finding_files_lst = []
+    result_file = 'result.txt'
+
+    main_func(search_directory, search_word)
